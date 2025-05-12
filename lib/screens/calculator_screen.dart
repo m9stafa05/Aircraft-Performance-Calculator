@@ -1,6 +1,7 @@
 import 'package:flight_calc/flight_calc.dart';
 import 'package:flight_calc/screens/custom_parameters_screen.dart';
 import 'package:flight_calc/screens/results_screen.dart';
+import 'package:flight_calc/widgets/footer.dart';
 import 'package:flutter/material.dart';
 
 class CalculatorScreen extends StatefulWidget {
@@ -543,6 +544,7 @@ class _CalculatorScreenState
           ],
         ),
       ),
+      bottomNavigationBar: const Footer(),
     );
   }
 

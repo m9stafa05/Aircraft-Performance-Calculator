@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flight_calc/widgets/footer.dart';
 
 class ResultsScreen extends StatelessWidget {
   final Map<String, double> results;
@@ -24,71 +25,145 @@ class ResultsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (customParameters != null) ...[
-              _buildResultsCard(
-                'Custom Parameters',
-                [
-                  _buildResultRow('Velocity', customParameters!['velocity'], 'm/s'),
-                  _buildResultRow('Surface Area', customParameters!['surfaceArea'], 'm²'),
-                  _buildResultRow('Zero-lift Drag Coefficient', customParameters!['dragCoefficient'], ''),
-                  _buildResultRow('Aspect Ratio', customParameters!['aspectRatio'], ''),
-                  _buildResultRow('Oswald Efficiency Factor', customParameters!['oswaldFactor'], ''),
-                  _buildResultRow('Weight', customParameters!['weight'], 'N'),
-                  _buildResultRow('Air Density', customParameters!['airDensity'], 'kg/m³'),
-                ],
-              ),
+              _buildResultsCard('Custom Parameters', [
+                _buildResultRow(
+                  'Velocity',
+                  customParameters!['velocity'],
+                  'm/s',
+                ),
+                _buildResultRow(
+                  'Surface Area',
+                  customParameters!['surfaceArea'],
+                  'm²',
+                ),
+                _buildResultRow(
+                  'Zero-lift Drag Coefficient',
+                  customParameters!['dragCoefficient'],
+                  '',
+                ),
+                _buildResultRow(
+                  'Aspect Ratio',
+                  customParameters!['aspectRatio'],
+                  '',
+                ),
+                _buildResultRow(
+                  'Oswald Efficiency Factor',
+                  customParameters!['oswaldFactor'],
+                  '',
+                ),
+                _buildResultRow(
+                  'Weight',
+                  customParameters!['weight'],
+                  'N',
+                ),
+                _buildResultRow(
+                  'Air Density',
+                  customParameters!['airDensity'],
+                  'kg/m³',
+                ),
+              ]),
               const SizedBox(height: 16),
             ],
-            _buildResultsCard(
-              'Flight Parameters',
-              [
-                _buildResultRow('Altitude', results['altitude'], 'm'),
-                _buildResultRow('Weight', results['weight'], 'N'),
-                _buildResultRow('Velocity', results['velocity'], 'm/s'),
-              ],
-            ),
+            _buildResultsCard('Flight Parameters', [
+              _buildResultRow(
+                'Altitude',
+                results['altitude'],
+                'm',
+              ),
+              _buildResultRow(
+                'Weight',
+                results['weight'],
+                'N',
+              ),
+              _buildResultRow(
+                'Velocity',
+                results['velocity'],
+                'm/s',
+              ),
+            ]),
             const SizedBox(height: 16),
-            _buildResultsCard(
-              'Forces',
-              [
-                _buildResultRow('Lift (L)', results['lift'], 'N'),
-                _buildResultRow('Thrust Available (TA)', results['thrustAvailable'], 'N'),
-                _buildResultRow('Thrust Required (TR)', results['thrustRequired'], 'N'),
-                _buildResultRow('Excess Thrust (ET)', results['excessThrust'], 'N'),
-              ],
-            ),
+            _buildResultsCard('Forces', [
+              _buildResultRow(
+                'Lift (L)',
+                results['lift'],
+                'N',
+              ),
+              _buildResultRow(
+                'Thrust Available (TA)',
+                results['thrustAvailable'],
+                'N',
+              ),
+              _buildResultRow(
+                'Thrust Required (TR)',
+                results['thrustRequired'],
+                'N',
+              ),
+              _buildResultRow(
+                'Excess Thrust (ET)',
+                results['excessThrust'],
+                'N',
+              ),
+            ]),
             const SizedBox(height: 16),
-            _buildResultsCard(
-              'Drag Components',
-              [
-                _buildResultRow('Parasite Drag (Do)', results['parasiteDrag'], 'N'),
-                _buildResultRow('Induced Drag (Di)', results['inducedDrag'], 'N'),
-                _buildResultRow('Total Drag (D)', results['totalDrag'], 'N'),
-              ],
-            ),
+            _buildResultsCard('Drag Components', [
+              _buildResultRow(
+                'Parasite Drag (Do)',
+                results['parasiteDrag'],
+                'N',
+              ),
+              _buildResultRow(
+                'Induced Drag (Di)',
+                results['inducedDrag'],
+                'N',
+              ),
+              _buildResultRow(
+                'Total Drag (D)',
+                results['totalDrag'],
+                'N',
+              ),
+            ]),
             const SizedBox(height: 16),
-            _buildResultsCard(
-              'Power',
-              [
-                _buildResultRow('Power Available (PA)', results['powerAvailable'], 'W'),
-                _buildResultRow('Power Required (PR)', results['powerRequired'], 'W'),
-                _buildResultRow('Excess Power (EP)', results['excessPower'], 'W'),
-              ],
-            ),
+            _buildResultsCard('Power', [
+              _buildResultRow(
+                'Power Available (PA)',
+                results['powerAvailable'],
+                'W',
+              ),
+              _buildResultRow(
+                'Power Required (PR)',
+                results['powerRequired'],
+                'W',
+              ),
+              _buildResultRow(
+                'Excess Power (EP)',
+                results['excessPower'],
+                'W',
+              ),
+            ]),
             const SizedBox(height: 16),
-            _buildResultsCard(
-              'Performance',
-              [
-                _buildResultRow('Rate of Climb (Thrust)', results['rateOfClimbThrust'], 'm/s'),
-                _buildResultRow('Rate of Climb (Power)', results['rateOfClimbPower'], 'm/s'),
-              ],
-            ),
+            _buildResultsCard('Performance', [
+              _buildResultRow(
+                'Rate of Climb (Thrust)',
+                results['rateOfClimbThrust'],
+                'm/s',
+              ),
+              _buildResultRow(
+                'Rate of Climb (Power)',
+                results['rateOfClimbPower'],
+                'm/s',
+              ),
+            ]),
           ],
         ),
       ),
+      bottomNavigationBar: const Footer(),
     );
   }
 
-  Widget _buildResultsCard(String title, List<Widget> rows) {
+  Widget _buildResultsCard(
+    String title,
+    List<Widget> rows,
+  ) {
     return Card(
       elevation: 4,
       child: Padding(
@@ -111,7 +186,11 @@ class ResultsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildResultRow(String label, double? value, String unit) {
+  Widget _buildResultRow(
+    String label,
+    double? value,
+    String unit,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(

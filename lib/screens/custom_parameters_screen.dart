@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flight_calc/widgets/footer.dart';
 
 class CustomParametersScreen extends StatefulWidget {
   final Map<String, double> defaultValues;
@@ -154,6 +155,7 @@ class _CustomParametersScreenState
           ],
         ),
       ),
+      bottomNavigationBar: const Footer(),
     );
   }
 
