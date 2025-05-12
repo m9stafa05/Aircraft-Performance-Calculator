@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class ResultsScreen extends StatelessWidget {
   final Map<String, double> results;
+  final Map<String, double>? customParameters;
 
-  const ResultsScreen({super.key, required this.results});
+  const ResultsScreen({
+    super.key,
+    required this.results,
+    this.customParameters,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +23,46 @@ class ResultsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (customParameters != null) ...[
+              _buildResultsCard('Custom Parameters', [
+                _buildResultRow(
+                  'Velocity',
+                  customParameters!['velocity'],
+                  'm/s',
+                ),
+                _buildResultRow(
+                  'Surface Area',
+                  customParameters!['surfaceArea'],
+                  'm²',
+                ),
+                _buildResultRow(
+                  'Zero-lift Drag Coefficient',
+                  customParameters!['dragCoefficient'],
+                  '',
+                ),
+                _buildResultRow(
+                  'Aspect Ratio',
+                  customParameters!['aspectRatio'],
+                  '',
+                ),
+                _buildResultRow(
+                  'Oswald Efficiency Factor',
+                  customParameters!['oswaldFactor'],
+                  '',
+                ),
+                _buildResultRow(
+                  'Weight',
+                  customParameters!['weight'],
+                  'N',
+                ),
+                _buildResultRow(
+                  'Air Density',
+                  customParameters!['airDensity'],
+                  'kg/m³',
+                ),
+              ]),
+              const SizedBox(height: 16),
+            ],
             _buildResultsCard('Flight Parameters', [
               _buildResultRow(
                 'Altitude',

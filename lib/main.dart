@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'flight_calc.dart';
 import 'results_screen.dart';
+import 'custom_parameters_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +38,7 @@ class _CalculatorScreenState
       AircraftCalculator();
   bool useDefaultParameters = true;
   bool showValidationErrors = false;
+  Map<String, double>? customParameters;
 
   // Text controllers for input fields
   final velocityController = TextEditingController(
@@ -77,6 +79,57 @@ class _CalculatorScreenState
       return 'Please enter a valid number';
     }
     return null;
+  }
+
+  void _openCustomParameters() {
+    final defaultValues = {
+      'velocity':
+          double.tryParse(velocityController.text) ?? 100,
+      'surfaceArea':
+          double.tryParse(surfaceAreaController.text) ?? 30,
+      'dragCoefficient':
+          double.tryParse(dragCoefficientController.text) ??
+          0.025,
+      'aspectRatio':
+          double.tryParse(aspectRatioController.text) ??
+          9.0,
+      'oswaldFactor':
+          double.tryParse(oswaldFactorController.text) ??
+          0.82,
+      'weight':
+          double.tryParse(weightController.text) ?? 40000,
+      'airDensity':
+          double.tryParse(airDensityController.text) ??
+          1.058,
+    };
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => CustomParametersScreen(
+              defaultValues: defaultValues,
+              onParametersSaved: (parameters) {
+                setState(() {
+                  customParameters = parameters;
+                  useDefaultParameters = false;
+                  // Update the calculator with new parameters
+                  calculator.updateParameters(
+                    velocity: parameters['velocity']!,
+                    surfaceArea: parameters['surfaceArea']!,
+                    dragCoefficient:
+                        parameters['dragCoefficient']!,
+                    aspectRatio: parameters['aspectRatio']!,
+                    oswaldFactor:
+                        parameters['oswaldFactor']!,
+                    weight: parameters['weight']!,
+                    airDensity: parameters['airDensity']!,
+                  );
+                });
+              },
+            ),
+      ),
+    );
   }
 
   void _calculatePerformance() {
@@ -140,17 +193,6 @@ class _CalculatorScreenState
       powerAvailableController.text,
     );
 
-    // Update calculator parameters
-    calculator.updateParameters(
-      velocity: velocity,
-      surfaceArea: surfaceArea,
-      dragCoefficient: dragCoefficient,
-      aspectRatio: aspectRatio,
-      oswaldFactor: oswaldFactor,
-      weight: weight,
-      airDensity: airDensity,
-    );
-
     // Calculate results
     results = calculator.calculatePerformance(
       altitude: altitude,
@@ -166,7 +208,10 @@ class _CalculatorScreenState
       context,
       MaterialPageRoute(
         builder:
-            (context) => ResultsScreen(results: results),
+            (context) => ResultsScreen(
+              results: results,
+              customParameters: customParameters,
+            ),
       ),
     );
 
@@ -198,100 +243,124 @@ class _CalculatorScreenState
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Parameters',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                     Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: RadioListTile<bool>(
-                            title: const Text(
-                              'Use Default Parameters',
-                            ),
-                            value: true,
-                            groupValue:
-                                useDefaultParameters,
-                            onChanged: (value) {
-                              setState(() {
-                                useDefaultParameters =
-                                    value!;
-                                if (useDefaultParameters) {
-                                  // Reset to default values
-                                  velocityController.text =
-                                      '100';
-                                  surfaceAreaController
-                                      .text = '30';
-                                  dragCoefficientController
-                                      .text = '0.025';
-                                  aspectRatioController
-                                      .text = '9.0';
-                                  oswaldFactorController
-                                      .text = '0.82';
-                                  weightController.text =
-                                      '40000';
-                                  airDensityController
-                                      .text = '1.058';
-                                }
-                              });
-                            },
+                        const Text(
+                          'Parameters',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Expanded(
-                          child: RadioListTile<bool>(
-                            title: const Text(
-                              'Custom Parameters',
+                        Row(
+                          children: [
+                            if (customParameters != null)
+                              TextButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    customParameters = null;
+                                    useDefaultParameters =
+                                        true;
+                                    // Reset to default values
+                                    velocityController
+                                        .text = '100';
+                                    surfaceAreaController
+                                        .text = '30';
+                                    dragCoefficientController
+                                        .text = '0.025';
+                                    aspectRatioController
+                                        .text = '9.0';
+                                    oswaldFactorController
+                                        .text = '0.82';
+                                    weightController.text =
+                                        '40000';
+                                    airDensityController
+                                        .text = '1.058';
+                                  });
+                                },
+                                icon: const Icon(
+                                  Icons.refresh,
+                                  size: 18,
+                                ),
+                                label: const Text(
+                                  'Reset to Default',
+                                ),
+                                style: TextButton.styleFrom(
+                                  foregroundColor:
+                                      Colors.red,
+                                ),
+                              ),
+                            const SizedBox(width: 8),
+                            ElevatedButton.icon(
+                              onPressed:
+                                  _openCustomParameters,
+                              icon: const Icon(
+                                Icons.settings,
+                              ),
+                              label: Text(
+                                customParameters != null
+                                    ? 'Edit Parameters'
+                                    : 'Custom Parameters',
+                              ),
+                              style:
+                                  ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Colors.blue,
+                                    foregroundColor:
+                                        Colors.white,
+                                  ),
                             ),
-                            value: false,
-                            groupValue:
-                                useDefaultParameters,
-                            onChanged: (value) {
-                              setState(() {
-                                useDefaultParameters =
-                                    value!;
-                              });
-                            },
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                    if (!useDefaultParameters)
-                      Column(
-                        children: [
-                          _buildInputField(
-                            'Velocity (m/s)',
-                            velocityController,
-                          ),
-                          _buildInputField(
-                            'Surface Area (m²)',
-                            surfaceAreaController,
-                          ),
-                          _buildInputField(
-                            'Zero-lift Drag Coefficient',
-                            dragCoefficientController,
-                          ),
-                          _buildInputField(
-                            'Aspect Ratio',
-                            aspectRatioController,
-                          ),
-                          _buildInputField(
-                            'Oswald Efficiency Factor',
-                            oswaldFactorController,
-                          ),
-                          _buildInputField(
-                            'Weight (N)',
-                            weightController,
-                          ),
-                          _buildInputField(
-                            'Air Density (kg/m³)',
-                            airDensityController,
-                          ),
-                        ],
+                    if (customParameters != null) ...[
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Current Custom Parameters:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
+                      const SizedBox(height: 8),
+                      _buildParameterRow(
+                        'Velocity',
+                        customParameters!['velocity'],
+                        'm/s',
+                      ),
+                      _buildParameterRow(
+                        'Surface Area',
+                        customParameters!['surfaceArea'],
+                        'm²',
+                      ),
+                      _buildParameterRow(
+                        'Zero-lift Drag Coefficient',
+                        customParameters!['dragCoefficient'],
+                        '',
+                      ),
+                      _buildParameterRow(
+                        'Aspect Ratio',
+                        customParameters!['aspectRatio'],
+                        '',
+                      ),
+                      _buildParameterRow(
+                        'Oswald Efficiency Factor',
+                        customParameters!['oswaldFactor'],
+                        '',
+                      ),
+                      _buildParameterRow(
+                        'Weight',
+                        customParameters!['weight'],
+                        'N',
+                      ),
+                      _buildParameterRow(
+                        'Air Density',
+                        customParameters!['airDensity'],
+                        'kg/m³',
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -372,6 +441,8 @@ class _CalculatorScreenState
                                     .clear();
                                 powerAvailableController
                                     .clear();
+                                customParameters = null;
+                                useDefaultParameters = true;
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -539,6 +610,33 @@ class _CalculatorScreenState
   }
 
   Widget _buildResultRow(
+    String label,
+    double? value,
+    String unit,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            '${value?.toStringAsFixed(2) ?? "N/A"} $unit',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildParameterRow(
     String label,
     double? value,
     String unit,
