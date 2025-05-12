@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'flight_calc.dart';
-import 'results_screen.dart';
-import 'custom_parameters_screen.dart';
+import 'screens/results_screen.dart';
+import 'screens/custom_parameters_screen.dart';
 
 void main() {
   runApp(const MyApp());
