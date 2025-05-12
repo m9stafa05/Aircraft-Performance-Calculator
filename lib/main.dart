@@ -36,6 +36,7 @@ class _CalculatorScreenState
   final AircraftCalculator calculator =
       AircraftCalculator();
   bool useDefaultParameters = true;
+  bool showValidationErrors = false;
 
   // Text controllers for input fields
   final velocityController = TextEditingController(
@@ -59,23 +60,58 @@ class _CalculatorScreenState
   final airDensityController = TextEditingController(
     text: '1.058',
   );
-  final altitudeController = TextEditingController(
-    text: '0',
-  );
-  final thrustAvailableController = TextEditingController(
-    text: '0',
-  );
-  final powerAvailableController = TextEditingController(
-    text: '0',
-  );
+  final altitudeController = TextEditingController();
+  final thrustAvailableController = TextEditingController();
+  final powerAvailableController = TextEditingController();
 
   // Results
   Map<String, double> results = {};
   bool hasCalculated = false;
 
+  String? _validateRequiredInput(String? value) {
+    if (!showValidationErrors) return null;
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    if (double.tryParse(value) == null) {
+      return 'Please enter a valid number';
+    }
+    return null;
+  }
+
   void _calculatePerformance() {
     // Dismiss keyboard
     FocusScope.of(context).unfocus();
+
+    // Set validation flag to true
+    setState(() {
+      showValidationErrors = true;
+    });
+
+    // Validate required inputs
+    final altitudeError = _validateRequiredInput(
+      altitudeController.text,
+    );
+    final thrustError = _validateRequiredInput(
+      thrustAvailableController.text,
+    );
+    final powerError = _validateRequiredInput(
+      powerAvailableController.text,
+    );
+
+    if (altitudeError != null ||
+        thrustError != null ||
+        powerError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Please fill in all required fields with valid numbers',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     // Get values from text fields
     final double velocity =
@@ -94,13 +130,15 @@ class _CalculatorScreenState
         double.tryParse(weightController.text) ?? 40000;
     final double airDensity =
         double.tryParse(airDensityController.text) ?? 1.058;
-    final double altitude =
-        double.tryParse(altitudeController.text) ?? 0;
-    final double thrustAvailable =
-        double.tryParse(thrustAvailableController.text) ??
-        0;
-    final double powerAvailable =
-        double.tryParse(powerAvailableController.text) ?? 0;
+    final double altitude = double.parse(
+      altitudeController.text,
+    );
+    final double thrustAvailable = double.parse(
+      thrustAvailableController.text,
+    );
+    final double powerAvailable = double.parse(
+      powerAvailableController.text,
+    );
 
     // Update calculator parameters
     calculator.updateParameters(
@@ -275,15 +313,15 @@ class _CalculatorScreenState
                       ),
                     ),
                     const SizedBox(height: 16),
-                    _buildInputField(
+                    _buildRequiredInputField(
                       'Altitude (m)',
                       altitudeController,
                     ),
-                    _buildInputField(
+                    _buildRequiredInputField(
                       'Thrust Available (N)',
                       thrustAvailableController,
                     ),
-                    _buildInputField(
+                    _buildRequiredInputField(
                       'Power Available (W)',
                       powerAvailableController,
                     ),
@@ -312,6 +350,8 @@ class _CalculatorScreenState
                               setState(() {
                                 hasCalculated = false;
                                 results.clear();
+                                showValidationErrors =
+                                    false;
                                 // Reset input fields to default values
                                 velocityController.text =
                                     '100';
@@ -327,12 +367,11 @@ class _CalculatorScreenState
                                     '40000';
                                 airDensityController.text =
                                     '1.058';
-                                altitudeController.text =
-                                    '0';
+                                altitudeController.clear();
                                 thrustAvailableController
-                                    .text = '0';
+                                    .clear();
                                 powerAvailableController
-                                    .text = '0';
+                                    .clear();
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -466,6 +505,34 @@ class _CalculatorScreenState
           labelText: label,
           border: const OutlineInputBorder(),
           isDense: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRequiredInputField(
+    String label,
+    TextEditingController controller,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: const TextInputType.numberWithOptions(
+          decimal: true,
+        ),
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+          isDense: true,
+          errorText: _validateRequiredInput(
+            controller.text,
+          ),
+          suffixIcon: const Icon(
+            Icons.star,
+            color: Colors.red,
+            size: 12,
+          ),
         ),
       ),
     );
