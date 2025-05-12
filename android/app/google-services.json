@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211149124149",
+    "project_id": "aircraft-performance-calc",
+    "storage_bucket": "aircraft-performance-calc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211149124149:android:4b3c616d9eb94e2256777c",
+        "android_client_info": {
+          "package_name": "com.example.flight_calc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY0GyAsiJbVZTcne0SwMfmSCcPi-aROMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
