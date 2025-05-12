@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'flight_calc.dart';
+import 'results_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -73,6 +74,9 @@ class _CalculatorScreenState
   bool hasCalculated = false;
 
   void _calculatePerformance() {
+    // Dismiss keyboard
+    FocusScope.of(context).unfocus();
+
     // Get values from text fields
     final double velocity =
         double.tryParse(velocityController.text) ?? 100;
@@ -114,6 +118,18 @@ class _CalculatorScreenState
       altitude: altitude,
       thrustAvailable: thrustAvailable,
       powerAvailable: powerAvailable,
+    );
+
+    // Add velocity to results for display
+    results['velocity'] = velocity;
+
+    // Navigate to results screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => ResultsScreen(results: results),
+      ),
     );
 
     setState(() {
@@ -272,20 +288,65 @@ class _CalculatorScreenState
                       powerAvailableController,
                     ),
                     const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _calculatePerformance,
-                        style: ElevatedButton.styleFrom(
-                          padding:
-                              const EdgeInsets.symmetric(
-                                vertical: 12,
-                              ),
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                _calculatePerformance,
+                            style: ElevatedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Calculate'),
+                          ),
                         ),
-                        child: const Text('Calculate'),
-                      ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                hasCalculated = false;
+                                results.clear();
+                                // Reset input fields to default values
+                                velocityController.text =
+                                    '100';
+                                surfaceAreaController.text =
+                                    '30';
+                                dragCoefficientController
+                                    .text = '0.025';
+                                aspectRatioController.text =
+                                    '9.0';
+                                oswaldFactorController
+                                    .text = '0.82';
+                                weightController.text =
+                                    '40000';
+                                airDensityController.text =
+                                    '1.058';
+                                altitudeController.text =
+                                    '0';
+                                thrustAvailableController
+                                    .text = '0';
+                                powerAvailableController
+                                    .text = '0';
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding:
+                                  const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Clear'),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

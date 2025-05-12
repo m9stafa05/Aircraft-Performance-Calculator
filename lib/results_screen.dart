@@ -9,191 +9,154 @@ class ResultsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flight Data Results'),
+        title: const Text('Calculation Results'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Card(
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Flight Performance Data',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Divider(height: 24),
-                _buildResultSection(
-                  title: 'Flight Conditions',
-                  items: [
-                    ResultItem(
-                      'Altitude',
-                      results['altitude'],
-                      'm',
-                    ),
-                    ResultItem(
-                      'Weight',
-                      results['weight'],
-                      'N',
-                    ),
-                  ],
-                ),
-                _buildResultSection(
-                  title: 'Forces',
-                  items: [
-                    ResultItem(
-                      'Lift (L)',
-                      results['lift'],
-                      'N',
-                    ),
-                    ResultItem(
-                      'Parasite Drag (Do)',
-                      results['parasiteDrag'],
-                      'N',
-                    ),
-                    ResultItem(
-                      'Induced Drag (Di)',
-                      results['inducedDrag'],
-                      'N',
-                    ),
-                    ResultItem(
-                      'Total Drag (D)',
-                      results['totalDrag'],
-                      'N',
-                    ),
-                  ],
-                ),
-                _buildResultSection(
-                  title: 'Performance',
-                  items: [
-                    ResultItem(
-                      'Thrust Available (TA)',
-                      results['thrustAvailable'],
-                      'N',
-                    ),
-                    ResultItem(
-                      'Power Available (PA)',
-                      results['powerAvailable'],
-                      'W',
-                    ),
-                    ResultItem(
-                      'Thrust Required (TR)',
-                      results['thrustRequired'],
-                      'N',
-                    ),
-                    ResultItem(
-                      'Power Required (PR)',
-                      results['powerRequired'],
-                      'W',
-                    ),
-                  ],
-                ),
-                _buildResultSection(
-                  title: 'Excess Performance',
-                  items: [
-                    ResultItem(
-                      'Excess Thrust (ET)',
-                      results['excessThrust'],
-                      'N',
-                    ),
-                    ResultItem(
-                      'Excess Power (EP)',
-                      results['excessPower'],
-                      'W',
-                    ),
-                    ResultItem(
-                      'Rate of Climb (Thrust)',
-                      results['rateOfClimbThrust'],
-                      'm/s',
-                    ),
-                    ResultItem(
-                      'Rate of Climb (Power)',
-                      results['rateOfClimbPower'],
-                      'm/s',
-                    ),
-                  ],
-                ),
-                if (results.containsKey('liftCoefficient'))
-                  _buildResultSection(
-                    title: 'Coefficients',
-                    items: [
-                      ResultItem(
-                        'Lift Coefficient (CL)',
-                        results['liftCoefficient'],
-                        '',
-                      ),
-                    ],
-                  ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text('Back to Calculator'),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildResultsCard('Flight Parameters', [
+              _buildResultRow(
+                'Altitude',
+                results['altitude'],
+                'm',
+              ),
+              _buildResultRow(
+                'Weight',
+                results['weight'],
+                'N',
+              ),
+              _buildResultRow(
+                'Velocity',
+                results['velocity'],
+                'm/s',
+              ),
+            ]),
+            const SizedBox(height: 16),
+            _buildResultsCard('Forces', [
+              _buildResultRow(
+                'Lift (L)',
+                results['lift'],
+                'N',
+              ),
+              _buildResultRow(
+                'Thrust Available (TA)',
+                results['thrustAvailable'],
+                'N',
+              ),
+              _buildResultRow(
+                'Thrust Required (TR)',
+                results['thrustRequired'],
+                'N',
+              ),
+              _buildResultRow(
+                'Excess Thrust (ET)',
+                results['excessThrust'],
+                'N',
+              ),
+            ]),
+            const SizedBox(height: 16),
+            _buildResultsCard('Drag Components', [
+              _buildResultRow(
+                'Parasite Drag (Do)',
+                results['parasiteDrag'],
+                'N',
+              ),
+              _buildResultRow(
+                'Induced Drag (Di)',
+                results['inducedDrag'],
+                'N',
+              ),
+              _buildResultRow(
+                'Total Drag (D)',
+                results['totalDrag'],
+                'N',
+              ),
+            ]),
+            const SizedBox(height: 16),
+            _buildResultsCard('Power', [
+              _buildResultRow(
+                'Power Available (PA)',
+                results['powerAvailable'],
+                'W',
+              ),
+              _buildResultRow(
+                'Power Required (PR)',
+                results['powerRequired'],
+                'W',
+              ),
+              _buildResultRow(
+                'Excess Power (EP)',
+                results['excessPower'],
+                'W',
+              ),
+            ]),
+            const SizedBox(height: 16),
+            _buildResultsCard('Performance', [
+              _buildResultRow(
+                'Rate of Climb (Thrust)',
+                results['rateOfClimbThrust'],
+                'm/s',
+              ),
+              _buildResultRow(
+                'Rate of Climb (Power)',
+                results['rateOfClimbPower'],
+                'm/s',
+              ),
+            ]),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildResultSection({
-    required String title,
-    required List<ResultItem> items,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+  Widget _buildResultsCard(
+    String title,
+    List<Widget> rows,
+  ) {
+    return Card(
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          ...items.map((item) => _buildResultRow(item)),
-          const Divider(height: 24),
-        ],
+            const SizedBox(height: 16),
+            ...rows,
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildResultRow(ResultItem item) {
+  Widget _buildResultRow(
+    String label,
+    double? value,
+    String unit,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            item.label,
+            label,
             style: const TextStyle(
               fontWeight: FontWeight.w500,
             ),
           ),
           Text(
-            '${item.value?.toStringAsFixed(2) ?? "N/A"} ${item.unit}',
+            '${value?.toStringAsFixed(2) ?? "N/A"} $unit',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
             ),
@@ -202,12 +165,4 @@ class ResultsScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class ResultItem {
-  final String label;
-  final double? value;
-  final String unit;
-
-  ResultItem(this.label, this.value, this.unit);
 }
