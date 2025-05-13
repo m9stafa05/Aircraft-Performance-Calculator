@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flight_calc/widgets/footer.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ResultsScreen extends StatelessWidget {
   final Map<String, double> results;
@@ -11,6 +12,112 @@ class ResultsScreen extends StatelessWidget {
     this.customParameters,
   });
 
+  String _formatResults() {
+    final buffer = StringBuffer();
+    buffer.writeln(
+      'Aircraft Performance Calculation Results',
+    );
+    buffer.writeln(
+      '=======================================',
+    );
+
+    if (customParameters != null) {
+      buffer.writeln('\nCustom Parameters:');
+      buffer.writeln('-----------------');
+      buffer.writeln(
+        'Velocity: ${customParameters!['velocity']?.toStringAsFixed(2)} m/s',
+      );
+      buffer.writeln(
+        'Surface Area: ${customParameters!['surfaceArea']?.toStringAsFixed(2)} m²',
+      );
+      buffer.writeln(
+        'Zero-lift Drag Coefficient: ${customParameters!['dragCoefficient']?.toStringAsFixed(4)}',
+      );
+      buffer.writeln(
+        'Aspect Ratio: ${customParameters!['aspectRatio']?.toStringAsFixed(2)}',
+      );
+      buffer.writeln(
+        'Oswald Efficiency Factor: ${customParameters!['oswaldFactor']?.toStringAsFixed(2)}',
+      );
+      buffer.writeln(
+        'Weight: ${customParameters!['weight']?.toStringAsFixed(2)} N',
+      );
+      buffer.writeln(
+        'Air Density: ${customParameters!['airDensity']?.toStringAsFixed(3)} kg/m³',
+      );
+    }
+
+    buffer.writeln('\nFlight Parameters:');
+    buffer.writeln('-----------------');
+    buffer.writeln(
+      'Altitude: ${results['altitude']?.toStringAsFixed(2)} m',
+    );
+    buffer.writeln(
+      'Weight: ${results['weight']?.toStringAsFixed(2)} N',
+    );
+    buffer.writeln(
+      'Velocity: ${results['velocity']?.toStringAsFixed(2)} m/s',
+    );
+
+    buffer.writeln('\nForces:');
+    buffer.writeln('-------');
+    buffer.writeln(
+      'Lift (L): ${results['lift']?.toStringAsFixed(2)} N',
+    );
+    buffer.writeln(
+      'Thrust Available (TA): ${results['thrustAvailable']?.toStringAsFixed(2)} N',
+    );
+    buffer.writeln(
+      'Thrust Required (TR): ${results['thrustRequired']?.toStringAsFixed(2)} N',
+    );
+    buffer.writeln(
+      'Excess Thrust (ET): ${results['excessThrust']?.toStringAsFixed(2)} N',
+    );
+
+    buffer.writeln('\nDrag Components:');
+    buffer.writeln('---------------');
+    buffer.writeln(
+      'Parasite Drag (Do): ${results['parasiteDrag']?.toStringAsFixed(2)} N',
+    );
+    buffer.writeln(
+      'Induced Drag (Di): ${results['inducedDrag']?.toStringAsFixed(2)} N',
+    );
+    buffer.writeln(
+      'Total Drag (D): ${results['totalDrag']?.toStringAsFixed(2)} N',
+    );
+
+    buffer.writeln('\nPower:');
+    buffer.writeln('------');
+    buffer.writeln(
+      'Power Available (PA): ${results['powerAvailable']?.toStringAsFixed(2)} W',
+    );
+    buffer.writeln(
+      'Power Required (PR): ${results['powerRequired']?.toStringAsFixed(2)} W',
+    );
+    buffer.writeln(
+      'Excess Power (EP): ${results['excessPower']?.toStringAsFixed(2)} W',
+    );
+
+    buffer.writeln('\nPerformance:');
+    buffer.writeln('-----------');
+    buffer.writeln(
+      'Rate of Climb (Thrust): ${results['rateOfClimbThrust']?.toStringAsFixed(2)} m/s',
+    );
+    buffer.writeln(
+      'Rate of Climb (Power): ${results['rateOfClimbPower']?.toStringAsFixed(2)} m/s',
+    );
+
+    return buffer.toString();
+  }
+
+  void _shareResults() {
+    final resultsText = _formatResults();
+    Share.share(
+      resultsText,
+      subject: 'Aircraft Performance Calculation Results',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,6 +125,13 @@ class ResultsScreen extends StatelessWidget {
         title: const Text('Calculation Results'),
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: _shareResults,
+            tooltip: 'Share Results',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
