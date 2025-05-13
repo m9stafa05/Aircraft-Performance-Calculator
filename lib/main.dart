@@ -24,7 +24,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const Scaffold(
         body: CalculatorScreen(),
-        
       ),
     );
   }
