@@ -69,45 +69,43 @@ class _CalculatorScreenState
           double.tryParse(surfaceAreaController.text) ?? 30,
       'dragCoefficient':
           double.tryParse(dragCoefficientController.text) ??
-          0.025,
+              0.025,
       'aspectRatio':
           double.tryParse(aspectRatioController.text) ??
-          9.0,
+              9.0,
       'oswaldFactor':
           double.tryParse(oswaldFactorController.text) ??
-          0.82,
+              0.82,
       'weight':
           double.tryParse(weightController.text) ?? 40000,
       'airDensity':
           double.tryParse(airDensityController.text) ??
-          1.058,
+              1.058,
     };
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => CustomParametersScreen(
-              defaultValues: defaultValues,
-              onParametersSaved: (parameters) {
-                setState(() {
-                  customParameters = parameters;
-                  useDefaultParameters = false;
-                  // Update the calculator with new parameters
-                  calculator.updateParameters(
-                    velocity: parameters['velocity']!,
-                    surfaceArea: parameters['surfaceArea']!,
-                    dragCoefficient:
-                        parameters['dragCoefficient']!,
-                    aspectRatio: parameters['aspectRatio']!,
-                    oswaldFactor:
-                        parameters['oswaldFactor']!,
-                    weight: parameters['weight']!,
-                    airDensity: parameters['airDensity']!,
-                  );
-                });
-              },
-            ),
+        builder: (context) => CustomParametersScreen(
+          defaultValues: defaultValues,
+          onParametersSaved: (parameters) {
+            setState(() {
+              customParameters = parameters;
+              useDefaultParameters = false;
+              // Update the calculator with new parameters
+              calculator.updateParameters(
+                velocity: parameters['velocity']!,
+                surfaceArea: parameters['surfaceArea']!,
+                dragCoefficient:
+                    parameters['dragCoefficient']!,
+                aspectRatio: parameters['aspectRatio']!,
+                oswaldFactor: parameters['oswaldFactor']!,
+                weight: parameters['weight']!,
+                airDensity: parameters['airDensity']!,
+              );
+            });
+          },
+        ),
       ),
     );
   }
@@ -155,14 +153,14 @@ class _CalculatorScreenState
     // ignore: unused_local_variable
     final double dragCoefficient =
         double.tryParse(dragCoefficientController.text) ??
-        0.025;
+            0.025;
     // ignore: unused_local_variable
     final double aspectRatio =
         double.tryParse(aspectRatioController.text) ?? 9.0;
     // ignore: unused_local_variable
     final double oswaldFactor =
         double.tryParse(oswaldFactorController.text) ??
-        0.82;
+            0.82;
     // ignore: unused_local_variable
     final double weight =
         double.tryParse(weightController.text) ?? 40000;
@@ -193,11 +191,10 @@ class _CalculatorScreenState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => ResultsScreen(
-              results: results,
-              customParameters: customParameters,
-            ),
+        builder: (context) => ResultsScreen(
+          results: results,
+          customParameters: customParameters,
+        ),
       ),
     );
 
@@ -242,42 +239,6 @@ class _CalculatorScreenState
                         ),
                         Row(
                           children: [
-                            if (customParameters != null)
-                              TextButton.icon(
-                                onPressed: () {
-                                  setState(() {
-                                    customParameters = null;
-                                    useDefaultParameters =
-                                        true;
-                                    // Reset to default values
-                                    velocityController
-                                        .text = '100';
-                                    surfaceAreaController
-                                        .text = '30';
-                                    dragCoefficientController
-                                        .text = '0.025';
-                                    aspectRatioController
-                                        .text = '9.0';
-                                    oswaldFactorController
-                                        .text = '0.82';
-                                    weightController.text =
-                                        '40000';
-                                    airDensityController
-                                        .text = '1.058';
-                                  });
-                                },
-                                icon: const Icon(
-                                  Icons.refresh,
-                                  size: 18,
-                                ),
-                                label: const Text(
-                                  'Reset to Default',
-                                ),
-                                style: TextButton.styleFrom(
-                                  foregroundColor:
-                                      Colors.red,
-                                ),
-                              ),
                             const SizedBox(width: 8),
                             ElevatedButton.icon(
                               onPressed:
@@ -292,11 +253,11 @@ class _CalculatorScreenState
                               ),
                               style:
                                   ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Colors.blue,
-                                    foregroundColor:
-                                        Colors.white,
-                                  ),
+                                backgroundColor:
+                                    Colors.blue,
+                                foregroundColor:
+                                    Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -323,7 +284,8 @@ class _CalculatorScreenState
                       ),
                       _buildParameterRow(
                         'Zero-lift Drag Coefficient',
-                        customParameters!['dragCoefficient'],
+                        customParameters![
+                            'dragCoefficient'],
                         '',
                       ),
                       _buildParameterRow(
@@ -345,6 +307,40 @@ class _CalculatorScreenState
                         'Air Density',
                         customParameters!['airDensity'],
                         'kg/m³',
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            customParameters = null;
+                            useDefaultParameters = true;
+                            // Reset to default values
+                            velocityController.text = '100';
+                            surfaceAreaController.text =
+                                '30';
+                            dragCoefficientController.text =
+                                '0.025';
+                            aspectRatioController.text =
+                                '9.0';
+                            oswaldFactorController.text =
+                                '0.82';
+                            weightController.text = '40000';
+                            airDensityController.text =
+                                '1.058';
+                          });
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label:
+                            const Text('Reset to Default'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          padding:
+                              const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 12,
+                          ),
+                        ),
                       ),
                     ],
                   ],
@@ -388,10 +384,10 @@ class _CalculatorScreenState
                             onPressed:
                                 _calculatePerformance,
                             style: ElevatedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
+                              padding: const EdgeInsets
+                                  .symmetric(
+                                vertical: 12,
+                              ),
                               backgroundColor: Colors.blue,
                               foregroundColor: Colors.white,
                             ),
@@ -432,10 +428,10 @@ class _CalculatorScreenState
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
+                              padding: const EdgeInsets
+                                  .symmetric(
+                                vertical: 12,
+                              ),
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
                             ),
